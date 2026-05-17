@@ -34,8 +34,9 @@ C.Permissions = {
     warn        = { "operator", "admin", "superadmin" },
     unwarn      = { "admin", "superadmin" },
     clearwarns  = { "superadmin" },
-    viewWarns   = { "operator", "admin", "superadmin" }, -- fremde Warns lesen
+    viewWarns   = { "operator", "admin", "superadmin" },
     openMenu    = { "operator", "admin", "superadmin" },
+    editConfig  = { "superadmin" },
 }
 
 -- ============================================================

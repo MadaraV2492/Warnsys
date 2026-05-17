@@ -142,9 +142,8 @@ end
 local function makeCard(parent)
     local p = vgui.Create("DPanel", parent)
     p.Paint = function(_, w, h)
-        draw.RoundedBox(8, 0, 0, w, h, THEME.card)
-        surface.SetDrawColor(THEME.border)
-        surface.DrawOutlinedRect(0, 0, w, h, 1)
+        draw.RoundedBox(8, 0, 0, w, h, THEME.border)
+        draw.RoundedBox(8, 1, 1, w - 2, h - 2, THEME.card)
     end
     return p
 end
@@ -159,9 +158,8 @@ local function makeStat(parent, label, valueFn, color)
     end
     c.Paint = function(s, w, h)
         local a = s.appearFrac
-        draw.RoundedBox(8, 0, 0, w, h, THEME.card)
-        surface.SetDrawColor(THEME.border)
-        surface.DrawOutlinedRect(0, 0, w, h, 1)
+        draw.RoundedBox(8, 0, 0, w, h, THEME.border)
+        draw.RoundedBox(8, 1, 1, w - 2, h - 2, THEME.card)
         -- akzentstreifen oben
         draw.RoundedBoxEx(8, 0, 0, w * a, 2, color, true, true, false, false)
         local val = tostring(valueFn() or "0")
@@ -286,16 +284,14 @@ function WarnSys.Client.OpenMenu(initialTab)
     end
 
     f.Paint = function(s, w, h)
-        -- Hintergrund-Verlauf
-        draw.RoundedBox(10, 0, 0, w, h, THEME.bg)
-        -- Top-Bar
-        draw.RoundedBoxEx(10, 0, 0, w, 56, THEME.bgAlt, true, true, false, false)
+        -- Rounded Border (Außenkante) + Hintergrund
+        draw.RoundedBox(10, 0, 0, w, h, THEME.border)
+        draw.RoundedBox(10, 1, 1, w - 2, h - 2, THEME.bg)
+        -- Top-Bar (inset)
+        draw.RoundedBoxEx(9, 1, 1, w - 2, 55, THEME.bgAlt, true, true, false, false)
         -- subtle akzent unter top-bar
         surface.SetDrawColor(ColorAlpha(THEME.accent, 120))
-        surface.DrawRect(0, 56, w, 1)
-        -- Border
-        surface.SetDrawColor(THEME.border)
-        surface.DrawOutlinedRect(0, 0, w, h, 1)
+        surface.DrawRect(1, 56, w - 2, 1)
         -- Logo + Titel
         draw.SimpleText("⚠", "WS.H1", 22, 28, THEME.accent,
             TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
@@ -453,9 +449,8 @@ function WarnSys.Client.OpenMenu(initialTab)
         info:DockMargin(pad, 6, pad, 6)
         info:SetTall(90)
         info.Paint = function(s, w, h)
-            draw.RoundedBox(8, 0, 0, w, h, THEME.card)
-            surface.SetDrawColor(THEME.border)
-            surface.DrawOutlinedRect(0, 0, w, h, 1)
+            draw.RoundedBox(8, 0, 0, w, h, THEME.border)
+            draw.RoundedBox(8, 1, 1, w - 2, h - 2, THEME.card)
             draw.SimpleText("Hinweis", "WS.H3", 18, 16, THEME.accent,
                 TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
             local txt = "Bei Verstößen gegen die Serverregeln kann ein Admin dich verwarnen.\n" ..
@@ -516,9 +511,8 @@ function WarnSys.Client.OpenMenu(initialTab)
         hdr:DockMargin(pad, pad, pad, 8)
         hdr:SetTall(54)
         hdr.Paint = function(_, w, h)
-            draw.RoundedBox(8, 0, 0, w, h, THEME.card)
-            surface.SetDrawColor(THEME.border)
-            surface.DrawOutlinedRect(0, 0, w, h, 1)
+            draw.RoundedBox(8, 0, 0, w, h, THEME.border)
+            draw.RoundedBox(8, 1, 1, w - 2, h - 2, THEME.card)
             draw.SimpleText("Vollständige Verwarnungs-Historie", "WS.H2",
                 16, h / 2, THEME.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         end
@@ -528,9 +522,8 @@ function WarnSys.Client.OpenMenu(initialTab)
         filter:SetSize(260, 28)
         filter:SetPlaceholderText("Grund / Admin filtern…")
         filter.Paint = function(s, w, h)
-            draw.RoundedBox(6, 0, 0, w, h, THEME.bg)
-            surface.SetDrawColor(THEME.border)
-            surface.DrawOutlinedRect(0, 0, w, h, 1)
+            draw.RoundedBox(6, 0, 0, w, h, THEME.border)
+            draw.RoundedBox(6, 1, 1, w - 2, h - 2, THEME.bg)
             s:DrawTextEntryText(THEME.text, THEME.accent, THEME.text)
         end
 
@@ -596,9 +589,8 @@ function WarnSys.Client.OpenMenu(initialTab)
         left:DockMargin(pad, pad, 8, pad)
         left:SetWide(280)
         left.Paint = function(_, w, h)
-            draw.RoundedBox(8, 0, 0, w, h, THEME.card)
-            surface.SetDrawColor(THEME.border)
-            surface.DrawOutlinedRect(0, 0, w, h, 1)
+            draw.RoundedBox(8, 0, 0, w, h, THEME.border)
+            draw.RoundedBox(8, 1, 1, w - 2, h - 2, THEME.card)
         end
 
         local search = vgui.Create("DTextEntry", left)
@@ -607,9 +599,8 @@ function WarnSys.Client.OpenMenu(initialTab)
         search:SetTall(30)
         search:SetPlaceholderText("Spieler suchen…")
         search.Paint = function(s, w, h)
-            draw.RoundedBox(6, 0, 0, w, h, THEME.bg)
-            surface.SetDrawColor(THEME.border)
-            surface.DrawOutlinedRect(0, 0, w, h, 1)
+            draw.RoundedBox(6, 0, 0, w, h, THEME.border)
+            draw.RoundedBox(6, 1, 1, w - 2, h - 2, THEME.bg)
             s:DrawTextEntryText(THEME.text, THEME.accent, THEME.text)
         end
 
@@ -676,9 +667,8 @@ function WarnSys.Client.OpenMenu(initialTab)
         right:Dock(FILL)
         right:DockMargin(0, pad, pad, pad)
         right.Paint = function(_, w, h)
-            draw.RoundedBox(8, 0, 0, w, h, THEME.card)
-            surface.SetDrawColor(THEME.border)
-            surface.DrawOutlinedRect(0, 0, w, h, 1)
+            draw.RoundedBox(8, 0, 0, w, h, THEME.border)
+            draw.RoundedBox(8, 1, 1, w - 2, h - 2, THEME.card)
         end
 
         local plyHeader = vgui.Create("DPanel", right)
@@ -710,9 +700,8 @@ function WarnSys.Client.OpenMenu(initialTab)
         preset:SetTextColor(THEME.text)
         for _, r in ipairs(WarnSys.Config.PresetReasons) do preset:AddChoice(r) end
         preset.Paint = function(s, w, h)
-            draw.RoundedBox(6, 0, 0, w, h, THEME.bg)
-            surface.SetDrawColor(THEME.border)
-            surface.DrawOutlinedRect(0, 0, w, h, 1)
+            draw.RoundedBox(6, 0, 0, w, h, THEME.border)
+            draw.RoundedBox(6, 1, 1, w - 2, h - 2, THEME.bg)
             draw.SimpleText(s:GetText(), "WS.Body", 10, h / 2,
                 THEME.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         end
@@ -722,9 +711,8 @@ function WarnSys.Client.OpenMenu(initialTab)
         reason:SetTall(32)
         reason:SetPlaceholderText("Grund eingeben…")
         reason.Paint = function(s, w, h)
-            draw.RoundedBox(6, 0, 0, w, h, THEME.bg)
-            surface.SetDrawColor(THEME.border)
-            surface.DrawOutlinedRect(0, 0, w, h, 1)
+            draw.RoundedBox(6, 0, 0, w, h, THEME.border)
+            draw.RoundedBox(6, 1, 1, w - 2, h - 2, THEME.bg)
             s:DrawTextEntryText(THEME.text, THEME.accent, THEME.text)
         end
         preset.OnSelect = function(_, _, value) reason:SetValue(value) end
@@ -863,9 +851,8 @@ function WarnSys.Client.OpenMenu(initialTab)
         card:DockMargin(pad, pad, pad, 8)
         card:SetTall(200)
         card.Paint = function(_, w, h)
-            draw.RoundedBox(8, 0, 0, w, h, THEME.card)
-            surface.SetDrawColor(THEME.border)
-            surface.DrawOutlinedRect(0, 0, w, h, 1)
+            draw.RoundedBox(8, 0, 0, w, h, THEME.border)
+            draw.RoundedBox(8, 1, 1, w - 2, h - 2, THEME.card)
             draw.SimpleText("Befehle", "WS.H2", 18, 14, THEME.text,
                 TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
             local cmds = {
@@ -889,9 +876,8 @@ function WarnSys.Client.OpenMenu(initialTab)
         rules:Dock(FILL)
         rules:DockMargin(pad, 0, pad, pad)
         rules.Paint = function(_, w, h)
-            draw.RoundedBox(8, 0, 0, w, h, THEME.card)
-            surface.SetDrawColor(THEME.border)
-            surface.DrawOutlinedRect(0, 0, w, h, 1)
+            draw.RoundedBox(8, 0, 0, w, h, THEME.border)
+            draw.RoundedBox(8, 1, 1, w - 2, h - 2, THEME.card)
             draw.SimpleText("Auto-Bestrafung", "WS.H2", 18, 14, THEME.text,
                 TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
             local y = 50
@@ -918,6 +904,431 @@ function WarnSys.Client.OpenMenu(initialTab)
     end
 
     -- ============================================================
+    --  PAGE: Einstellungen (nur für SuperAdmin / editConfig)
+    -- ============================================================
+    pages.settings = function(page)
+        local pad = 18
+
+        -- ---------- Mini-Widget-Helfer ----------
+        local function styledEntry(parent, default, numeric)
+            local e = vgui.Create("DTextEntry", parent)
+            e:SetTall(28)
+            e:SetText(tostring(default or ""))
+            e:SetNumeric(numeric == true)
+            e:SetUpdateOnType(true)
+            e.Paint = function(s, w, h)
+                draw.RoundedBox(6, 0, 0, w, h, THEME.border)
+                draw.RoundedBox(6, 1, 1, w - 2, h - 2, THEME.bg)
+                s:DrawTextEntryText(THEME.text, THEME.accent, THEME.text)
+            end
+            return e
+        end
+
+        local function styledCheckbox(parent, checked)
+            local c = vgui.Create("DButton", parent)
+            c:SetText("")
+            c:SetSize(28, 28)
+            c.checked = checked == true
+            c.hoverFrac = 0
+            c.Think = function(s)
+                s.hoverFrac = lerp(s.hoverFrac, s:IsHovered() and 1 or 0,
+                    math.min(FrameTime() * 10, 1))
+            end
+            c.Paint = function(s, w, h)
+                local col = s.checked and THEME.accent
+                    or lerpCol(s.hoverFrac, THEME.bg, THEME.cardHover)
+                draw.RoundedBox(6, 0, 0, w, h, THEME.border)
+                draw.RoundedBox(6, 1, 1, w - 2, h - 2, col)
+                if s.checked then
+                    draw.SimpleText("✓", "WS.H3", w / 2, h / 2, THEME.text,
+                        TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+                end
+            end
+            c.DoClick = function(s)
+                s.checked = not s.checked
+                surface.PlaySound("ui/buttonclick.wav")
+            end
+            return c
+        end
+
+        local function styledCombo(parent, choices, current)
+            local c = vgui.Create("DComboBox", parent)
+            c:SetTall(28)
+            c:SetValue(current or choices[1] or "")
+            c:SetTextColor(THEME.text)
+            for _, ch in ipairs(choices) do c:AddChoice(ch) end
+            c.Paint = function(s, w, h)
+                draw.RoundedBox(6, 0, 0, w, h, THEME.border)
+                draw.RoundedBox(6, 1, 1, w - 2, h - 2, THEME.bg)
+                draw.SimpleText(s:GetText(), "WS.Body", 10, h / 2,
+                    THEME.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+                draw.SimpleText("▼", "WS.Small", w - 12, h / 2,
+                    THEME.textDim, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+            end
+            return c
+        end
+
+        local function sectionHeader(parent, title, icon)
+            local p = vgui.Create("DPanel", parent)
+            p:Dock(TOP)
+            p:DockMargin(0, 8, 0, 6)
+            p:SetTall(38)
+            p.Paint = function(_, w, h)
+                draw.SimpleText(icon or "▸", "WS.H2", 0, h / 2,
+                    THEME.accent, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+                draw.SimpleText(title, "WS.H2", 28, h / 2,
+                    THEME.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+                surface.SetDrawColor(THEME.border)
+                surface.DrawLine(0, h - 1, w, h - 1)
+            end
+            return p
+        end
+
+        -- Eine Zeile: Label links, Widget rechts
+        local function row(parent, label, widget, hint)
+            local p = vgui.Create("DPanel", parent)
+            p:Dock(TOP)
+            p:DockMargin(0, 4, 0, 4)
+            p:SetTall(hint and 50 or 36)
+            p.Paint = function(_, w, h)
+                draw.SimpleText(label, "WS.Body", 4, hint and 6 or h / 2,
+                    THEME.text, TEXT_ALIGN_LEFT,
+                    hint and TEXT_ALIGN_TOP or TEXT_ALIGN_CENTER)
+                if hint then
+                    draw.SimpleText(hint, "WS.Small", 4, h - 14,
+                        THEME.textDim, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+                end
+            end
+            widget:SetParent(p)
+            widget:Dock(RIGHT)
+            widget:DockMargin(8, 4, 0, 4)
+            return p
+        end
+
+        -- ---------- Layout: Header + Scroll + Footer ----------
+        local header = vgui.Create("DPanel", page)
+        header:Dock(TOP)
+        header:DockMargin(pad, pad, pad, 0)
+        header:SetTall(54)
+        header.Paint = function(_, w, h)
+            draw.RoundedBox(8, 0, 0, w, h, THEME.border)
+            draw.RoundedBox(8, 1, 1, w - 2, h - 2, THEME.card)
+            draw.SimpleText("⚙  Server-Einstellungen", "WS.H2",
+                16, h / 2, THEME.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+            draw.SimpleText("Änderungen werden persistent gespeichert",
+                "WS.Small", w - 16, h / 2, THEME.textDim,
+                TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+        end
+
+        -- Footer (Speichern-Buttons)
+        local footer = vgui.Create("DPanel", page)
+        footer:Dock(BOTTOM)
+        footer:DockMargin(pad, 0, pad, pad)
+        footer:SetTall(52)
+        footer.Paint = function(_, w, h)
+            draw.RoundedBox(8, 0, 0, w, h, THEME.border)
+            draw.RoundedBox(8, 1, 1, w - 2, h - 2, THEME.card)
+        end
+
+        -- Scroll-Bereich (direktes Docking auf Scroll)
+        local scroll = vgui.Create("DScrollPanel", page)
+        scroll:Dock(FILL)
+        scroll:DockMargin(pad, 6, pad, 6)
+        styleScroll(scroll)
+        local canvas = scroll
+
+        -- ---------- Felder erstellen (vorerst leer; werden bei Empfang gefüllt) ----------
+        local fields = {}
+
+        local function build(cfg)
+            scroll:GetCanvas():Clear()
+            fields = {}
+
+            -- ALLGEMEIN
+            sectionHeader(canvas, "Allgemein", "⚙"):SetParent(canvas)
+            fields.Language = styledCombo(canvas, { "de", "en" }, cfg.Language)
+            fields.Language:SetWide(120)
+            row(canvas, "Sprache", fields.Language,
+                "Wird live an alle Spieler übertragen.")
+
+            fields.MinReasonLength = styledEntry(canvas, cfg.MinReasonLength, true)
+            fields.MinReasonLength:SetWide(80)
+            row(canvas, "Min. Grund-Länge", fields.MinReasonLength)
+
+            fields.MaxReasonLength = styledEntry(canvas, cfg.MaxReasonLength, true)
+            fields.MaxReasonLength:SetWide(80)
+            row(canvas, "Max. Grund-Länge", fields.MaxReasonLength)
+
+            fields.WarnCooldown = styledEntry(canvas, cfg.WarnCooldown, true)
+            fields.WarnCooldown:SetWide(80)
+            row(canvas, "Cooldown (Sek.)", fields.WarnCooldown,
+                "Sekunden zwischen zwei Warns desselben Admins.")
+
+            fields.ExpireDays = styledEntry(canvas, cfg.ExpireDays, true)
+            fields.ExpireDays:SetWide(80)
+            row(canvas, "Ablauf (Tage)", fields.ExpireDays,
+                "0 = Verwarnungen laufen nie ab.")
+
+            fields.KeepHistory = styledCheckbox(canvas, cfg.KeepHistory)
+            row(canvas, "History behalten", fields.KeepHistory,
+                "Abgelaufene Warns werden archiviert, statt gelöscht.")
+
+            fields.AllowSelfWarn = styledCheckbox(canvas, cfg.AllowSelfWarn)
+            row(canvas, "Selbst-Warnen erlauben", fields.AllowSelfWarn)
+
+            fields.AllowWarnHigherRank = styledCheckbox(canvas, cfg.AllowWarnHigherRank)
+            row(canvas, "Höhere Ränge warnen", fields.AllowWarnHigherRank)
+
+            fields.NotifyAllAdmins = styledCheckbox(canvas, cfg.NotifyAllAdmins)
+            row(canvas, "Admins informieren", fields.NotifyAllAdmins,
+                "Andere Admins sehen, wenn jemand verwarnt wird.")
+
+            fields.BroadcastWarn = styledCheckbox(canvas, cfg.BroadcastWarn)
+            row(canvas, "Broadcast im Chat", fields.BroadcastWarn,
+                "Jeder Spieler sieht jede Verwarnung im Chat.")
+
+            -- AUTO-BESTRAFUNG
+            sectionHeader(canvas, "Auto-Bestrafung", "⚠"):SetParent(canvas)
+            local punishContainer = vgui.Create("DPanel", canvas)
+            punishContainer:Dock(TOP)
+            punishContainer:DockMargin(0, 4, 0, 4)
+            punishContainer:SetTall(10)
+            punishContainer.Paint = function() end
+            fields.AutoPunish = {}
+
+            local function addPunishRow(threshold, def)
+                local p = vgui.Create("DPanel", punishContainer)
+                p:Dock(TOP)
+                p:DockMargin(0, 0, 0, 6)
+                p:SetTall(40)
+                p.Paint = function(_, w, h)
+                    draw.RoundedBox(6, 0, 0, w, h, THEME.bg)
+                end
+
+                local lblWarns = vgui.Create("DLabel", p)
+                lblWarns:Dock(LEFT) lblWarns:SetWide(70)
+                lblWarns:DockMargin(10, 0, 4, 0)
+                lblWarns:SetText("Ab Warns:") lblWarns:SetTextColor(THEME.textDim)
+                lblWarns:SetFont("WS.Small")
+
+                local entryNum = styledEntry(p, threshold, true)
+                entryNum:SetWide(50)
+                entryNum:Dock(LEFT) entryNum:DockMargin(0, 6, 8, 6)
+
+                local typeCombo = styledCombo(p,
+                    { "kick", "tempban", "ban", "none" }, def.type)
+                typeCombo:SetWide(110)
+                typeCombo:Dock(LEFT) typeCombo:DockMargin(0, 6, 8, 6)
+
+                local entryTime = styledEntry(p, def.time or 60, true)
+                entryTime:SetWide(70)
+                entryTime:Dock(LEFT) entryTime:DockMargin(0, 6, 8, 6)
+                entryTime:SetTooltip("Minuten (nur bei tempban)")
+
+                local entryReason = styledEntry(p, def.reason or "")
+                entryReason:Dock(FILL) entryReason:DockMargin(0, 6, 8, 6)
+
+                local delBtn = vgui.Create("DButton", p)
+                delBtn:SetText("")
+                delBtn:Dock(RIGHT) delBtn:DockMargin(0, 6, 10, 6)
+                delBtn:SetWide(32)
+                delBtn.hoverFrac = 0
+                delBtn.Think = function(s)
+                    s.hoverFrac = lerp(s.hoverFrac, s:IsHovered() and 1 or 0,
+                        math.min(FrameTime() * 10, 1))
+                end
+                delBtn.Paint = function(s, w, h)
+                    draw.RoundedBox(6, 0, 0, w, h,
+                        lerpCol(s.hoverFrac, THEME.card, THEME.accent))
+                    draw.SimpleText("✕", "WS.H3", w / 2, h / 2, THEME.text,
+                        TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+                end
+
+                local entry = {
+                    num = entryNum, typeC = typeCombo,
+                    time = entryTime, reason = entryReason, panel = p,
+                }
+                table.insert(fields.AutoPunish, entry)
+
+                delBtn.DoClick = function()
+                    for i, e in ipairs(fields.AutoPunish) do
+                        if e == entry then
+                            table.remove(fields.AutoPunish, i) break
+                        end
+                    end
+                    p:Remove()
+                    surface.PlaySound("buttons/button10.wav")
+                end
+            end
+
+            -- Bestehende Rules laden
+            local thresholds = {}
+            for n in pairs(cfg.AutoPunish or {}) do table.insert(thresholds, n) end
+            table.sort(thresholds)
+            for _, n in ipairs(thresholds) do
+                addPunishRow(n, cfg.AutoPunish[n])
+            end
+
+            local addBtn = makeButton(canvas, "+ Regel hinzufügen", THEME.info, "+")
+            addBtn:Dock(TOP) addBtn:DockMargin(0, 4, 0, 8)
+            addBtn:SetTall(32)
+            addBtn.DoClick = function()
+                addPunishRow(1, { type = "kick", reason = "" })
+                punishContainer:SizeToChildren(false, true)
+            end
+
+            -- MYSQL
+            sectionHeader(canvas, "Speicher (SQLite / MySQL)", "▤"):SetParent(canvas)
+            fields.Storage = styledCombo(canvas, { "sqlite", "mysql" }, cfg.Storage)
+            fields.Storage:SetWide(140)
+            row(canvas, "Speicher-Backend", fields.Storage,
+                "MySQL benötigt das MySQLOO-Modul.")
+
+            local m = cfg.MySQL or {}
+            fields.MySQL_host = styledEntry(canvas, m.host)
+            fields.MySQL_host:SetWide(260)
+            row(canvas, "MySQL Host", fields.MySQL_host)
+
+            fields.MySQL_port = styledEntry(canvas, m.port, true)
+            fields.MySQL_port:SetWide(100)
+            row(canvas, "MySQL Port", fields.MySQL_port)
+
+            fields.MySQL_user = styledEntry(canvas, m.user)
+            fields.MySQL_user:SetWide(220)
+            row(canvas, "MySQL User", fields.MySQL_user)
+
+            fields.MySQL_pass = styledEntry(canvas, m.pass)
+            fields.MySQL_pass:SetWide(220)
+            fields.MySQL_pass:SetTextColor(THEME.text)
+            -- Hinweis: kein echter Passwort-Modus, weil DTextEntry kein SetPasswordChar hat,
+            --        aber die Anzeige reicht für Server-Owner.
+            row(canvas, "MySQL Passwort", fields.MySQL_pass)
+
+            fields.MySQL_database = styledEntry(canvas, m.database)
+            fields.MySQL_database:SetWide(220)
+            row(canvas, "MySQL Datenbank", fields.MySQL_database)
+
+            local testBtn = makeButton(canvas, "Verbindung testen", THEME.info, "↻")
+            testBtn:Dock(TOP) testBtn:DockMargin(0, 4, 0, 8)
+            testBtn:SetTall(34)
+            testBtn:SetWide(200)
+            testBtn.DoClick = function()
+                WarnSys.Client.TestMySQL({
+                    host     = fields.MySQL_host:GetValue(),
+                    port     = tonumber(fields.MySQL_port:GetValue()) or 3306,
+                    user     = fields.MySQL_user:GetValue(),
+                    pass     = fields.MySQL_pass:GetValue(),
+                    database = fields.MySQL_database:GetValue(),
+                })
+                WarnSys.Util.Notify(LocalPlayer(), "Teste Verbindung…", 3)
+            end
+
+            -- DISCORD
+            sectionHeader(canvas, "Discord-Webhook", "▣"):SetParent(canvas)
+            local d = cfg.Discord or {}
+            fields.Discord_enabled = styledCheckbox(canvas, d.enabled)
+            row(canvas, "Aktiviert", fields.Discord_enabled)
+
+            fields.Discord_webhook = styledEntry(canvas, d.webhook)
+            fields.Discord_webhook:SetWide(420)
+            row(canvas, "Webhook-URL", fields.Discord_webhook,
+                "https://discord.com/api/webhooks/…")
+
+            fields.Discord_username = styledEntry(canvas, d.username)
+            fields.Discord_username:SetWide(220)
+            row(canvas, "Anzeigename", fields.Discord_username)
+
+        end
+
+        -- ---------- Buttons im Footer ----------
+        local saveBtn = makeButton(footer, "Einstellungen speichern", THEME.accent, "✓")
+        saveBtn:SetPos(0, 0) saveBtn:SetSize(220, 0)
+        local reloadBtn = makeButton(footer, "Neu laden", THEME.info, "↻")
+        reloadBtn:SetPos(0, 0) reloadBtn:SetSize(140, 0)
+
+        footer.PerformLayout = function(_, w, h)
+            saveBtn:SetPos(w - 240, 10) saveBtn:SetSize(220, h - 20)
+            reloadBtn:SetPos(w - 400, 10) reloadBtn:SetSize(140, h - 20)
+        end
+
+        saveBtn.DoClick = function()
+            -- AutoPunish-Map zusammenbauen
+            local auto = {}
+            for _, e in ipairs(fields.AutoPunish) do
+                local n = tonumber(e.num:GetValue())
+                if n then
+                    auto[n] = {
+                        type   = e.typeC:GetText(),
+                        time   = tonumber(e.time:GetValue()),
+                        reason = e.reason:GetValue(),
+                    }
+                end
+            end
+            local data = {
+                Language            = fields.Language:GetText(),
+                MinReasonLength     = tonumber(fields.MinReasonLength:GetValue()),
+                MaxReasonLength     = tonumber(fields.MaxReasonLength:GetValue()),
+                WarnCooldown        = tonumber(fields.WarnCooldown:GetValue()),
+                ExpireDays          = tonumber(fields.ExpireDays:GetValue()),
+                KeepHistory         = fields.KeepHistory.checked,
+                AllowSelfWarn       = fields.AllowSelfWarn.checked,
+                AllowWarnHigherRank = fields.AllowWarnHigherRank.checked,
+                NotifyAllAdmins     = fields.NotifyAllAdmins.checked,
+                BroadcastWarn       = fields.BroadcastWarn.checked,
+                AutoPunish          = auto,
+                Storage             = fields.Storage:GetText(),
+                MySQL = {
+                    host     = fields.MySQL_host:GetValue(),
+                    port     = tonumber(fields.MySQL_port:GetValue()) or 3306,
+                    user     = fields.MySQL_user:GetValue(),
+                    pass     = fields.MySQL_pass:GetValue(),
+                    database = fields.MySQL_database:GetValue(),
+                },
+                Discord = {
+                    enabled  = fields.Discord_enabled.checked,
+                    webhook  = fields.Discord_webhook:GetValue(),
+                    username = fields.Discord_username:GetValue(),
+                },
+            }
+            WarnSys.Client.SaveConfig(data)
+            surface.PlaySound("buttons/button14.wav")
+        end
+
+        reloadBtn.DoClick = function()
+            WarnSys.Client.RequestConfig()
+            surface.PlaySound("ui/buttonclick.wav")
+        end
+
+        -- Test-Result Notification
+        hook.Add("WarnSys.MySQLTestResult", page, function(ok, msg)
+            WarnSys.Util.Notify(LocalPlayer(),
+                (ok and "MySQL OK: " or "MySQL Fehler: ") .. msg,
+                ok and 0 or 1)
+        end)
+
+        -- Empfangs-Hook
+        hook.Add("WarnSys.RemoteConfigReceived", page, function()
+            if WarnSys.Client.RemoteConfig then
+                build(WarnSys.Client.RemoteConfig)
+            end
+        end)
+
+        -- Initial laden
+        if WarnSys.Client.RemoteConfig then
+            build(WarnSys.Client.RemoteConfig)
+        else
+            WarnSys.Client.RequestConfig()
+            local loading = vgui.Create("DLabel", canvas)
+            loading:Dock(TOP) loading:SetTall(60)
+            loading:SetText("Lädt Einstellungen…")
+            loading:SetFont("WS.Body") loading:SetTextColor(THEME.textDim)
+            loading:SetContentAlignment(5)
+        end
+
+        page.refresh = function() WarnSys.Client.RequestConfig() end
+    end
+
+    -- ============================================================
     --  Sidebar-Tabs erstellen
     -- ============================================================
     local title = vgui.Create("DLabel", sidebar)
@@ -937,6 +1348,14 @@ function WarnSys.Client.OpenMenu(initialTab)
         sep:SetText("ADMIN") sep:SetFont("WS.Small")
         sep:SetTextColor(THEME.textMuted)
         tabs.admin = makeTab(sidebar, "Spieler verwalten", "⚙", "admin")
+    end
+
+    if canPerm("editConfig") then
+        local sep = vgui.Create("DLabel", sidebar)
+        sep:Dock(TOP) sep:DockMargin(20, 16, 20, 4) sep:SetTall(18)
+        sep:SetText("SERVER") sep:SetFont("WS.Small")
+        sep:SetTextColor(THEME.textMuted)
+        tabs.settings = makeTab(sidebar, "Einstellungen", "✦", "settings")
     end
 
     local sep2 = vgui.Create("DLabel", sidebar)

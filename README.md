@@ -55,6 +55,19 @@ Ein vollständiges Warn-System für Garry's Mod Roleplay-Server mit voller **ULX
 
 ---
 
+## Ingame-Einstellungen (SuperAdmin)
+
+Öffne das Menü mit `!warns` → Sidebar-Tab **Einstellungen**. Editierbar:
+
+- **Allgemein**: Sprache (DE/EN), Grundlängen, Cooldown, Ablauf-Tage, Toggle-Flags
+- **Auto-Bestrafung**: beliebig viele Regeln (Threshold + Kick/Tempban/Ban + Grund) hinzufügen/entfernen
+- **MySQL**: Backend wechseln (SQLite ↔ MySQL), Host/Port/User/Pass/Datenbank, **Verbindung testen**
+- **Discord**: Webhook aktivieren + URL + Anzeigename
+
+Änderungen werden in `data/warnsys_runtime.json` gespeichert und beim Server-Start mit der Datei-Config gemerged. MySQL-Reconnect erfolgt automatisch.
+
+---
+
 ## Konfiguration (`sh_config.lua`)
 
 Die wichtigsten Optionen:
