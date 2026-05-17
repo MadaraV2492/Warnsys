@@ -13,6 +13,11 @@ end)
 net.Receive("WarnSys.OpenMenu", function()
     local tab = net.ReadString()
     if tab == "" then tab = nil end
+    -- Falls der Server einen Tab schickt, den wir nicht sehen dürfen,
+    -- öffnet OpenMenu intern den Fallback (siehe switchTab).
+    if tab and WarnSys.Util and WarnSys.Util.CanSeePanel then
+        if not WarnSys.Util.CanSeePanel(LocalPlayer(), tab) then tab = nil end
+    end
     if WarnSys.Client.OpenMenu then WarnSys.Client.OpenMenu(tab) end
 end)
 

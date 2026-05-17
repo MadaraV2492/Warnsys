@@ -29,14 +29,28 @@ C.MySQL = {
 
 -- ============================================================
 --  Berechtigungen (ULX-Gruppen, die warnen / unwarnen dürfen)
+--  "*" als Wildcard erlaubt JEDEM Spieler diese Aktion.
 -- ============================================================
 C.Permissions = {
     warn        = { "operator", "admin", "superadmin" },
     unwarn      = { "admin", "superadmin" },
     clearwarns  = { "superadmin" },
-    viewWarns   = { "operator", "admin", "superadmin" },
-    openMenu    = { "operator", "admin", "superadmin" },
+    viewWarns   = { "operator", "admin", "superadmin" }, -- fremde Warns lesen
+    openMenu    = { "*" },                                 -- jeder darf das Menü öffnen
     editConfig  = { "superadmin" },
+}
+
+-- ============================================================
+--  Panel-Tabs (was sieht wer im Menü?)
+--  "*" = jeder. Sonst Liste der ULX-Gruppen, die den Tab sehen.
+--  SuperAdmin sieht IMMER alles.
+-- ============================================================
+C.PanelTabs = {
+    dashboard = { "*" },                                   -- Übersicht eigener Warns
+    mywarns   = { "*" },                                   -- Eigene Verwarnungs-Historie
+    admin     = { "operator", "admin", "superadmin" },     -- Andere Spieler verwarnen
+    settings  = { "superadmin" },                          -- Server-Einstellungen
+    help      = { "*" },                                   -- Befehle & Regeln
 }
 
 -- ============================================================

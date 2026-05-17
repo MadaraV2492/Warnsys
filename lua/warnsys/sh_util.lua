@@ -11,7 +11,23 @@ function WarnSys.Util.HasPermission(ply, action)
 
     local plyGroup = ply:GetUserGroup()
     for _, g in ipairs(groups) do
-        if g == plyGroup then return true end
+        if g == "*" or g == plyGroup then return true end
+    end
+    return false
+end
+
+-- Welche Panel-Tabs darf der Spieler im Menü sehen?
+function WarnSys.Util.CanSeePanel(ply, tab)
+    if not IsValid(ply) then return true end
+    if ply:IsSuperAdmin() then return true end
+
+    local cfg = WarnSys.Config.PanelTabs
+    local groups = cfg and cfg[tab]
+    if not groups then return false end
+
+    local plyGroup = ply:GetUserGroup()
+    for _, g in ipairs(groups) do
+        if g == "*" or g == plyGroup then return true end
     end
     return false
 end

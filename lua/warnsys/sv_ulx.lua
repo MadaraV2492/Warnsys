@@ -83,8 +83,11 @@ local function register()
             WarnSys.Util.Notify(calling_ply, WarnSys.L("no_perm"), 1)
             return
         end
+        -- Admin-Tab nur, wenn erlaubt; sonst auf eigene Warns leiten.
+        local tab = WarnSys.Util.CanSeePanel(calling_ply, "admin")
+            and "admin" or "mywarns"
         net.Start("WarnSys.OpenMenu")
-            net.WriteString("admin")
+            net.WriteString(tab)
         net.Send(calling_ply)
     end
     local menuCmd = ulx.command(CATEGORY, "ulx warnmenu", ulx.warnmenu, "!warnmenu")
