@@ -3,36 +3,61 @@
 WarnSys.DB = {}
 local DB = WarnSys.DB
 
-local function isMySQL() return WarnSys.Config.Storage == "mysql" end
+local mysql -- aktuelle MySQL-Verbindung
+local function isMySQL() return WarnSys.Config.Storage == "mysql" and mysql end
 
 -- ============================================================
---  MySQL-Wrapper (lazy, nur wenn MySQLOO geladen)
+--  MySQL-Connect / Reconnect
 -- ============================================================
-local mysql
-if isMySQL() then
-    if not pcall(require, "mysqloo") then
-        ErrorNoHalt("[WarnSys] MySQLOO konnte nicht geladen werden – fallback auf SQLite.\n")
+function DB.Connect()
+    if WarnSys.Config.Storage ~= "mysql" then return end
+    local ok, mysqloo = pcall(require, "mysqloo")
+    if not ok or not mysqloo then
+        ErrorNoHalt("[WarnSys] MySQLOO nicht installiert – nutze SQLite.\n")
         WarnSys.Config.Storage = "sqlite"
+        return
+    end
+    local c = WarnSys.Config.MySQL
+    if not c or c.host == "" or c.database == "" then
+        ErrorNoHalt("[WarnSys] MySQL-Konfiguration unvollständig.\n")
+        return
+    end
+    mysql = mysqloo.connect(c.host, c.user, c.pass, c.database, c.port)
+    function mysql:onConnected()
+        print("[WarnSys] MySQL verbunden (" .. c.host .. "/" .. c.database .. ").")
+        DB.Init()
+    end
+    function mysql:onConnectionFailed(err)
+        ErrorNoHalt("[WarnSys] MySQL fehlgeschlagen: " .. err .. " – Fallback SQLite.\n")
+        mysql = nil
+        WarnSys.Config.Storage = "sqlite"
+    end
+    mysql:connect()
+end
+
+function DB.Reconnect()
+    if mysql then
+        pcall(function() mysql:disconnect(true) end)
+        mysql = nil
+    end
+    if WarnSys.Config.Storage == "mysql" then
+        DB.Connect()
     else
-        local c = WarnSys.Config.MySQL
-        mysql = mysqloo.connect(c.host, c.user, c.pass, c.database, c.port)
-        function mysql:onConnected() print("[WarnSys] MySQL verbunden.") end
-        function mysql:onConnectionFailed(err)
-            ErrorNoHalt("[WarnSys] MySQL-Verbindung fehlgeschlagen: " .. err .. "\n")
-            WarnSys.Config.Storage = "sqlite"
-        end
-        mysql:connect()
+        DB.Init() -- SQLite hat sowieso eine "Verbindung"
     end
 end
 
+-- ============================================================
+--  Internals
+-- ============================================================
 local function escape(s)
-    if isMySQL() and mysql then return mysql:escape(tostring(s)) end
+    if isMySQL() then return mysql:escape(tostring(s)) end
     return sql.SQLStr(tostring(s), true)
 end
 
 local function query(q, cb)
     WarnSys.Util.Debug("SQL:", q)
-    if isMySQL() and mysql then
+    if isMySQL() then
         local r = mysql:query(q)
         function r:onSuccess(data) if cb then cb(data) end end
         function r:onError(err)
@@ -56,8 +81,9 @@ DB.Query = query
 --  Schema
 -- ============================================================
 function DB.Init()
-    local autoInc = isMySQL() and "AUTO_INCREMENT" or "AUTOINCREMENT"
-    local intType = isMySQL() and "INT" or "INTEGER"
+    local mySQL = isMySQL()
+    local autoInc = mySQL and "AUTO_INCREMENT" or "AUTOINCREMENT"
+    local intType = mySQL and "INT" or "INTEGER"
 
     query(([[
         CREATE TABLE IF NOT EXISTS warnsys_warns (
@@ -76,7 +102,14 @@ function DB.Init()
     query("CREATE INDEX IF NOT EXISTS idx_warnsys_steamid ON warnsys_warns(steamid);")
     query("CREATE INDEX IF NOT EXISTS idx_warnsys_active  ON warnsys_warns(active);")
 end
-hook.Add("Initialize", "WarnSys.DB.Init", function() DB.Init() end)
+
+hook.Add("Initialize", "WarnSys.DB.Init", function()
+    if WarnSys.Config.Storage == "mysql" then
+        DB.Connect() -- onConnected ruft DB.Init()
+    else
+        DB.Init()
+    end
+end)
 
 -- ============================================================
 --  CRUD
@@ -101,7 +134,6 @@ function DB.Insert(data, cb)
     )
     query(q, function(_, err)
         if err then if cb then cb(nil, err) end return end
-        -- letzte ID holen
         if isMySQL() then
             query("SELECT LAST_INSERT_ID() AS id;", function(r)
                 if cb then cb(r and r[1] and tonumber(r[1].id)) end
@@ -154,6 +186,5 @@ function DB.ExpireOld()
     end
 end
 
--- Periodisch ablaufen lassen
 timer.Create("WarnSys.Expire", 300, 0, function() DB.ExpireOld() end)
 hook.Add("InitPostEntity", "WarnSys.ExpireBoot", function() DB.ExpireOld() end)

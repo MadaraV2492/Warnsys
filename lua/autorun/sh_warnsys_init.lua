@@ -28,8 +28,9 @@ local shared = {
 }
 
 local server = {
-    "sv_database.lua",
     "sv_logs.lua",
+    "sv_settings.lua",
+    "sv_database.lua",
     "sv_warns.lua",
     "sv_net.lua",
     "sv_ulx.lua",
