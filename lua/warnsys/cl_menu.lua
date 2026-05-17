@@ -57,6 +57,17 @@ local function canPerm(action)
     return WarnSys.Util.HasPermission(LocalPlayer(), action)
 end
 
+local function canSeeTab(tab)
+    if not WarnSys.Util or not WarnSys.Util.CanSeePanel then
+        -- Fallback: Klassische Permissions
+        if tab == "dashboard" or tab == "mywarns" or tab == "help" then return true end
+        if tab == "admin"    then return canPerm("warn")       end
+        if tab == "settings" then return canPerm("editConfig") end
+        return false
+    end
+    return WarnSys.Util.CanSeePanel(LocalPlayer(), tab)
+end
+
 -- ============================================================
 --  Komponenten
 -- ============================================================
@@ -358,6 +369,13 @@ function WarnSys.Client.OpenMenu(initialTab)
     local tabs = {}
 
     local function switchTab(key)
+        -- Falls der angeforderte Tab nicht erlaubt ist, weichen wir aus.
+        if not tabs[key] or not canSeeTab(key) then
+            for _, fallback in ipairs({ "mywarns", "dashboard", "help" }) do
+                if tabs[fallback] then key = fallback break end
+            end
+        end
+        if not tabs[key] then return end
         if activePage and activePage.key == key then return end
         for _, t in pairs(tabs) do t.isActive = (t.key == key) end
 
@@ -830,6 +848,14 @@ function WarnSys.Client.OpenMenu(initialTab)
 
         page.refresh = refreshPlayers
         refreshPlayers()
+
+        -- Standardmäßig den Aufrufer selbst auswählen, damit "Kein Spieler
+        -- gewählt" nicht stehen bleibt und eigene Warns sofort sichtbar sind.
+        timer.Simple(0, function()
+            if not IsValid(page) or IsValid(selected) then return end
+            selected = LocalPlayer()
+            page.onSelect(LocalPlayer())
+        end)
 
         -- Auto-Refresh wenn Spieler joinen/leaven
         timer.Create("WarnSys.AdminPlyRefresh", 5, 0, function()
@@ -1339,10 +1365,14 @@ function WarnSys.Client.OpenMenu(initialTab)
     title:SetFont("WS.Small")
     title:SetTextColor(THEME.textMuted)
 
-    tabs.dashboard = makeTab(sidebar, "Dashboard",  "▣", "dashboard")
-    tabs.mywarns   = makeTab(sidebar, "Meine Warns", "◉", "mywarns")
+    if canSeeTab("dashboard") then
+        tabs.dashboard = makeTab(sidebar, "Dashboard",  "▣", "dashboard")
+    end
+    if canSeeTab("mywarns") then
+        tabs.mywarns   = makeTab(sidebar, "Meine Warns", "◉", "mywarns")
+    end
 
-    if canPerm("warn") then
+    if canSeeTab("admin") and canPerm("warn") then
         local sep = vgui.Create("DLabel", sidebar)
         sep:Dock(TOP) sep:DockMargin(20, 16, 20, 4) sep:SetTall(18)
         sep:SetText("ADMIN") sep:SetFont("WS.Small")
@@ -1350,7 +1380,7 @@ function WarnSys.Client.OpenMenu(initialTab)
         tabs.admin = makeTab(sidebar, "Spieler verwalten", "⚙", "admin")
     end
 
-    if canPerm("editConfig") then
+    if canSeeTab("settings") and canPerm("editConfig") then
         local sep = vgui.Create("DLabel", sidebar)
         sep:Dock(TOP) sep:DockMargin(20, 16, 20, 4) sep:SetTall(18)
         sep:SetText("SERVER") sep:SetFont("WS.Small")
@@ -1358,11 +1388,13 @@ function WarnSys.Client.OpenMenu(initialTab)
         tabs.settings = makeTab(sidebar, "Einstellungen", "✦", "settings")
     end
 
-    local sep2 = vgui.Create("DLabel", sidebar)
-    sep2:Dock(TOP) sep2:DockMargin(20, 16, 20, 4) sep2:SetTall(18)
-    sep2:SetText("INFO") sep2:SetFont("WS.Small")
-    sep2:SetTextColor(THEME.textMuted)
-    tabs.help = makeTab(sidebar, "Befehle & Regeln", "?", "help")
+    if canSeeTab("help") then
+        local sep2 = vgui.Create("DLabel", sidebar)
+        sep2:Dock(TOP) sep2:DockMargin(20, 16, 20, 4) sep2:SetTall(18)
+        sep2:SetText("INFO") sep2:SetFont("WS.Small")
+        sep2:SetTextColor(THEME.textMuted)
+        tabs.help = makeTab(sidebar, "Befehle & Regeln", "?", "help")
+    end
 
     for _, t in pairs(tabs) do
         t.DoClick = function(s) switchTab(s.key) end

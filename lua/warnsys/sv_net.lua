@@ -37,8 +37,12 @@ end
 --  Receiver: Anfrage einer Warn-Liste
 -- ============================================================
 net.Receive("WarnSys.RequestWarns", function(_, ply)
+    if not IsValid(ply) then return end
     local sid = net.ReadString()
     local includeExpired = net.ReadBool()
+
+    -- Validierung des SteamID-Strings (Anti-Spoofing / Abuse)
+    if not isstring(sid) or #sid > 32 then return end
 
     -- Spieler darf immer seine eigene Liste sehen
     if sid ~= ply:SteamID() and not WarnSys.Util.HasPermission(ply, "viewWarns") then

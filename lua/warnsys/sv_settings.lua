@@ -13,6 +13,7 @@ local PERSISTED = {
     "ExpireDays", "KeepHistory", "AllowSelfWarn", "AllowWarnHigherRank",
     "NotifyAllAdmins", "BroadcastWarn", "AutoPunish",
     "Storage", "MySQL", "Discord", "PresetReasons",
+    "Permissions", "PanelTabs",
 }
 
 -- ============================================================
@@ -203,7 +204,10 @@ util.AddNetworkString("WarnSys.MySQLTest")
 util.AddNetworkString("WarnSys.MySQLTestResult")
 
 net.Receive("WarnSys.RequestConfig", function(_, ply)
-    if not WarnSys.Util.HasPermission(ply, "editConfig") then return end
+    if not WarnSys.Util.HasPermission(ply, "editConfig") then
+        WarnSys.Util.Notify(ply, WarnSys.L("no_perm"), 1)
+        return
+    end
     local snap = snapshot(true)
     net.Start("WarnSys.SendConfig")
         net.WriteString(util.TableToJSON(snap))
@@ -226,7 +230,10 @@ end)
 
 -- MySQL Test-Connection (ohne Speichern)
 net.Receive("WarnSys.MySQLTest", function(_, ply)
-    if not WarnSys.Util.HasPermission(ply, "editConfig") then return end
+    if not WarnSys.Util.HasPermission(ply, "editConfig") then
+        WarnSys.Util.Notify(ply, WarnSys.L("no_perm"), 1)
+        return
+    end
     local raw  = net.ReadString()
     local data = util.JSONToTable(raw or "")
     if not istable(data) then return end
