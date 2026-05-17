@@ -83,7 +83,9 @@ local function register()
             WarnSys.Util.Notify(calling_ply, WarnSys.L("no_perm"), 1)
             return
         end
-        net.Start("WarnSys.OpenMenu") net.Send(calling_ply)
+        net.Start("WarnSys.OpenMenu")
+            net.WriteString("admin")
+        net.Send(calling_ply)
     end
     local menuCmd = ulx.command(CATEGORY, "ulx warnmenu", ulx.warnmenu, "!warnmenu")
     menuCmd:defaultAccess(ULib.ACCESS_ADMIN)
