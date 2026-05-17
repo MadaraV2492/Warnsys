@@ -38,6 +38,7 @@ local server = {
 
 local client = {
     "cl_net.lua",
+    "cl_notify.lua",
     "cl_hud.lua",
     "cl_menu.lua",
     "cl_warnlist.lua",

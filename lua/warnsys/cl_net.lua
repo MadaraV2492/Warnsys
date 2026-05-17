@@ -11,7 +11,9 @@ net.Receive("WarnSys.Notify", function()
 end)
 
 net.Receive("WarnSys.OpenMenu", function()
-    if WarnSys.Client.OpenMenu then WarnSys.Client.OpenMenu() end
+    local tab = net.ReadString()
+    if tab == "" then tab = nil end
+    if WarnSys.Client.OpenMenu then WarnSys.Client.OpenMenu(tab) end
 end)
 
 net.Receive("WarnSys.UpdateCount", function()
